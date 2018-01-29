@@ -1,123 +1,149 @@
-//#include "stdafx.h"
-#include "stdio.h"
-#include "string.h"//для работы с Си-строками
-#include "conio.h"//консольный ввод-вывод
-#include "windows.h"
+#include <stdio.h>
+#include <string.h>
+#include <conio.h>
+#include <windows.h>
 #include <locale.h>
 
-#define _CRT_SECURE_NO_WARNINGS
-
-struct company
+struct Worker
 {
-	char surname[15], department[15], position[15], salary[15];
-} array[100];
+	char surname[15];
+	char department[15];
+	char position[15];
+    int salary;
+} company[100];
 
 
-struct search
+int workersNumber = 0;
+
+
+void AddElement()
 {
-	char empty[15], d[15];
-}   search[2];
-    int i = 0,
-	quantity = 0;
-
-
-void enter()
-{
-	i = quantity;
-	printf("Enter surname: ");
-	scanf_s("%s",  &array[i].surname);
-	printf("Enter department: ");
-	scanf_s("%s", &array[i].department);
-	printf("Enter position: ");
-	scanf_s("%s", &array[i].position);
-	printf("Enter salary: ");
-	scanf_s("%s", &array[i].salary);
+	printf("SURNAME: ");
+	scanf_s("%s", &company[workersNumber].surname);
+	printf("DEPARTMENT: ");
+	scanf_s("%s", &company[workersNumber].department);
+	printf("POSITION: ");
+	scanf_s("%s", &company[workersNumber].position);
+	printf("SALARY: ");
+	scanf_s("%d", &company[workersNumber].salary);
 	printf("\n ADDED \n");
-	quantity++;
+	workersNumber++;
 
 }
 
-void selection()
+void PrintCompany()
 {
-	for (int i = 0; i <= quantity - 1; i++) {
-		if (array[i].surname != search[0].empty)
-			printf("%s  ", array[i].surname);
-		printf("%s  ", array[i].department);
-		printf("%s  ", array[i].position);
-		printf("%s  \n", array[i].salary);
-
-	}
-}
-
-void commandSearch()
-{
-	printf("Enter command for searching: ");
-	scanf_s("%s", &search[0].d);
-	for (i = 0; i <= quantity - 1; i++)
+	for (int i = 0; i < workersNumber; i++)
 	{
-		if (!strcmp(array[i].surname, search[0].d))// сравнили строки
-		{
-			printf("%s  ", array[i].surname);
-			printf("%s  \n", array[i].department);
-			printf("%s  ", array[i].position);
-			printf("%s  \n", array[i].salary);
-		}
+		printf("WORKER -%d: SURNAME - %s, DEPARTMENT - %s, POSITION - %s, SALARY - %d\n ", i + 1, company[i].surname, company[i].department, company[i].position, company[i].salary);
 	}
 }
 
-void modification()
+void FindWorker()
 {
-	printf("Enter commant for modification': \n");
-	scanf_s("%s", &search[0].d);
-	for (i = 0; i <= quantity - 1; i++)
+	char searchWorker[50];
+	printf("ENTER WORKER FOR EDITING': \n");
+	scanf_s("%s", &searchWorker);
+	int i;
+	int index;
+	int isFound = 0;
+	for (i = 0; i <workersNumber; i++)
 	{
-		if (!strcmp(array[i].surname, search[0].d))
+		if (strcmp(company[i].surname, searchWorker) == 0)
 		{
-			printf("Enter new surname: ");
-			scanf_s("%s", array[i].surname);
-			printf("Enter new department: ");
-			scanf_s("%s", array[i].department);
-			printf("Enter new position: ");
-			scanf_s("%s", array[i].position);
-			printf("Enter new salary: ");
-			scanf_s("%s", array[i].salary);
-			printf("MODIFIED\n");
-			break;
+			isFound = 1;
+			index = i;
 		}
 	}
+
+	if (isFound)
+	{
+		printf("WORKER - %d: SURNAME - %s, DEPARTMENT - %s, POSITION - %s, SALARY - %d\n ", index + 1, company[index].surname, company[index].department, company[index].position, company[index].salary);
+		return;
+	}
+	else
+	{
+		printf("WORKER IS NOT FOUND!!!");
+		return;
+	}
+
 }
-void deletion()
+
+void UpdateWORKER()
 {
-	printf("Enter command for deletion: ");
-	scanf_s("%s", search[0].d);
-	for (i = 0; i <= quantity - 1; i++) {
-		if (!strcmp(array[i].surname, search[0].d))//Функция возвращает указатель на строку, в которую скопированы данные.
-			strcpy_s(array[i].surname, search[0].empty);
-		strcpy_s(array[i].department, array[i].surname);
-		strcpy_s(array[i].position, array[i].surname);
-		strcpy_s(array[i].salary, array[i].surname);
-		{system("cls");// очистка экрана для консоли
-		printf(" \n DELETED \n");
+	char searchWorker[50];
+	printf("ENTER SURNAME FOR EDITING: \n");
+	scanf_s("%s", &searchWorker);
+	int i;
+	int index;
+	int isFound = 0;
+	for (i = 0; i < workersNumber; i++)
+	{
+		if (strcmp(company[i].surname, searchWorker) == 0)
+		{
+			isFound = 1;
+			index = i;
 		}
+	}
+
+	if (isFound)
+	{
+		printf("ENTER DEPARTMENT ");
+		scanf_s("%s", company[index].position);
+		printf("ENTER SALARY ");
+		scanf_s("%d", company[index].salary);
+	}
+	else
+	{
+		printf("WORKER IS NOT FOUND");
+	}
+
+}
+void RemoveWorker()
+{
+	char searchBook[50];
+	printf("ENTER SURNAME FOR REMOVING ");
+	scanf_s("%s", &searchBook);
+	int i, j, index;
+	int isWorkerInCompany = 0;
+	for (i = 0; i <workersNumber; i++)
+	{
+		if (strcmp(company[i].surname, searchBook) == 0)
+		{
+			isWorkerInCompany = 1;
+			index = i;
+		}
+	}
+	if (!isWorkerInCompany)
+	{
+		printf("WORKER IS NOT FOUND!!!");
+	}
+	else
+	{
+		for (j = index; j < workersNumber; j++) {
+			company[j] = company[j + 1];
+		}
+		printf(" \n WORKER IS REMOVED \n");
 	}
 }
 
 int main()
 {
-	int comm = 1;
-	while (comm) {
-		printf("\n SELECT COMMAND: \n 1)ADD' 2)PRINT' 3)MODIFY' 4)DELETE' 5)SEARCH 0)EXIT\n");
-		printf("\n ENTER ACTION: ");
+	setlocale(LC_ALL, "Rus");
+	int comm;
+	while (1) {
+		printf("\n SELECT COMMAND: \n 1)ADD\n 2)PRINT\n 3)UPDATE\n 4)REMOVE\n 5)FIND\n 0)EXIT\n");
+		printf("\n ENTER NUMBER OF COMMAND: ");
 		scanf_s("%d", &comm);
 		switch (comm) {
-		case 1: enter(); break;
-		case 2: selection(); break;
-		case 3: modification(); break;
-		case 4: deletion(); break;
-		case 5: commandSearch(); break;
+		case 1: AddElement(); break;
+		case 2: PrintCompany(); break;
+		case 3: UpdateWorker(); break;
+		case 4: RemoveWorker(); break;
+		case 5: FindWorker(); break;
 		case 0: printf("EXIT\n"); break;
 		default:
-			printf("NOT FOUND\n");
+			printf("NOT FOUND!!!\n");
 		}
 	}
 	_getch();
